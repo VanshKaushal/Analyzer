@@ -1,0 +1,56 @@
+# Environments
+.env
+.env.*
+!.env.example
+
+# Python Backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+pytest.xml
+
+# Node.js / React Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# Frontend Build output
+frontend/dist/
+frontend/build/
+.next/
+out/
+.nuxt/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Temporary files, logs, and databases
+*.sqlite3
+db.sqlite3
+*.log
+tmp/
+temp/
+coverage/
+
+# Celery, Redis
+celerybeat-schedule
+*.pid

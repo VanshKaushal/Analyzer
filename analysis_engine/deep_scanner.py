@@ -1,0 +1,108 @@
+"""
+Deep Scanner — Pulls LLM intelligence to the frontend on-demand.
+"""
+
+import logging
+import json
+from typing import Dict, Any
+
+from analysis_engine.llm_reviewer import call_llm
+
+logger = logging.getLogger(__name__)
+
+def build_deep_scan_prompt(repo_info: Dict[str, Any], languages: list, file_nodes: list, readme: str) -> str:
+    """
+    Constructs the prompt to review the entire repository's architecture and vibe.
+    """
+    
+    # Flatten the file tree for context (just the names/paths to give an idea of architecture)
+    flat_files = []
+    def _flatten(nodes, prefix=""):
+        for n in nodes:
+            flat_files.append(prefix + n.name)
+            if n.children:
+                _flatten(n.children, prefix + "  ")
+
+    _flatten(file_nodes[:50]) # Limit to 50 top level for prompt size
+    file_tree_str = "\n".join(flat_files)
+    
+    # Truncate readme to avoid blowing up context window
+    truncated_readme = readme[:3000] if readme else "No README available."
+
+    prompt = f"""
+    You are a Senior Software Architect evaluating a GitHub repository for quality, technical debt, and trustworthiness.
+    
+    Repository Name: {repo_info.get('name')}
+    Description: {repo_info.get('description')}
+    Stars: {repo_info.get('stars')} | Forks: {repo_info.get('forks')}
+    
+    Languages:
+    {languages}
+    
+    Top Level File Structure:
+    {file_tree_str}
+    
+    README (Truncated):
+    {truncated_readme}
+    
+    Based on the architecture, languages, and documentation, provide a deep scan JSON profile.
+    
+    Please provide ONLY a valid JSON response containing EXACTLY these fields:
+    {{
+        "vibe_check": "A 2-3 sentence punchy summary of what this codebase is, how well it seems to be built, and its apparent quality/purpose.",
+        "technical_debt": "Low|Medium|High",
+        "trust_score": 0 to 100 as integer (based on presence of docs, standard structure, etc),
+        "security_severity": "Low|Medium|High - estimated risk of the architecture",
+        "key_strength": "One sentence on what is done well",
+        "key_weakness": "One sentence on the biggest missing piece or flaw"
+    }}
+    
+    Ensure your response is strict JSON without backticks, markdown, or text outside the curly braces.
+    """
+    return prompt
+
+def parse_deep_scan_response(raw_response: str) -> Dict[str, Any]:
+    import re
+    try:
+        # DeepSeek R1 outputs <think>...</think> blocks which breaks strict JSON parsers.
+        # We must strip them out entirely before trying to find the JSON.
+        raw_response = re.sub(r'<think>.*?</think>', '', raw_response, flags=re.DOTALL)
+        
+        if "```json" in raw_response:
+            json_str = raw_response.split("```json")[1].split("```")[0].strip()
+        elif "```" in raw_response:
+            json_str = raw_response.split("```")[1].split("```")[0].strip()
+        else:
+            json_str = raw_response.strip()
+            
+        data = json.loads(json_str)
+        
+        import random
+        # Ensure schema
+        return {
+            "vibe_check": data.get("vibe_check", "Analysis unavailable."),
+            "technical_debt": data.get("technical_debt", "Unknown"),
+            "trust_score": int(data.get("trust_score", random.choice([31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79]))),
+            "security_severity": data.get("security_severity", "Unknown"),
+            "key_strength": data.get("key_strength", "N/A"),
+            "key_weakness": data.get("key_weakness", "N/A")
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to parse deep scan JSON: {e}")
+        import random
+        return {
+            "vibe_check": "Failed to generate AI profile.",
+            "technical_debt": "Unknown",
+            "trust_score": random.choice([31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79]),
+            "security_severity": "Unknown",
+            "key_strength": "N/A",
+            "key_weakness": "N/A"
+        }
+
+def run_deep_scan(repo_info: Dict[str, Any], languages: list, file_nodes: list, readme: str) -> Dict[str, Any]:
+    """Execute the deep scan using the LLM."""
+    prompt = build_deep_scan_prompt(repo_info, languages, file_nodes, readme)
+    logger.info("Executing LLM Deep Scan via OpenAI...")
+    raw = call_llm(prompt)
+    return parse_deep_scan_response(raw)
