@@ -77,3 +77,56 @@ export interface AnalysisResult {
     architectureDiagram: string;
     preview: PreviewDetails;
 }
+
+// ─── Profile Analysis Objects ──────────────────────────────────────────────────
+export interface ProfileInfo {
+    username: string;
+    name: string | null;
+    avatar_url: string;
+    bio: string | null;
+    company: string | null;
+    location: string | null;
+    followers: number;
+    following: number;
+    public_repos: number;
+    total_stars: number;
+    total_forks: number;
+    html_url: string;
+}
+
+export interface RepoPortfolioItem {
+    name: string;
+    description: string | null;
+    stars: number;
+    forks: number;
+    language: string | null;
+    size: number;
+    url: string;
+    vibe_score: number;
+}
+
+export interface DeveloperPersona {
+    vibe_check: string;
+    archetype: string;
+    strengths: string[];
+    growth_areas: string[];
+    vibe_score: number;
+    contribution_style: string;
+}
+
+export interface ProfileAnalysisObject {
+    profile: ProfileInfo;
+    languages: LanguageStat[];
+    commits: CommitStat[];
+    repositories: RepoPortfolioItem[];
+    persona: DeveloperPersona | null;
+}
+
+export interface ProfileAnalysisResult {
+    profile: ProfileInfo;
+    languages: MappedLanguageStat[];
+    commits: CommitStat[];
+    repositories: RepoPortfolioItem[];
+    persona: DeveloperPersona | null;
+}
+

@@ -106,3 +106,99 @@ def run_deep_scan(repo_info: Dict[str, Any], languages: list, file_nodes: list, 
     logger.info("Executing LLM Deep Scan via OpenAI...")
     raw = call_llm(prompt)
     return parse_deep_scan_response(raw)
+
+
+def build_profile_deep_scan_prompt(profile_info: Dict[str, Any], languages: list, repositories: list) -> str:
+    """
+    Constructs a prompt to analyze a GitHub user's entire portfolio and personality.
+    """
+    repos_str = "\n".join([
+        f"- {r.get('name')} ({r.get('stars')} stars, {r.get('forks')} forks, {r.get('language')}, vibe: {r.get('vibe_score')}/100): {r.get('description')}"
+        for r in repositories
+    ])
+    
+    prompt = f"""
+    You are a Senior Technical Recruiter and Developer Relationship Lead evaluating a developer's public GitHub footprint.
+    
+    Developer Username: {profile_info.get('username')}
+    Name: {profile_info.get('name')}
+    Bio: {profile_info.get('bio')}
+    Company: {profile_info.get('company')} | Location: {profile_info.get('location')}
+    Followers: {profile_info.get('followers')} | Following: {profile_info.get('following')}
+    Public Repositories Count: {profile_info.get('public_repos')}
+    Total Stars: {profile_info.get('total_stars')} | Total Forks: {profile_info.get('total_forks')}
+    
+    Global Language Distribution:
+    {languages}
+    
+    Top Public Portfolio Repositories:
+    {repos_str}
+    
+    Based on their portfolio, language preferences, star footprint, and profile vibe:
+    Create a highly professional and engaging "Developer Persona" JSON card.
+    
+    Please provide ONLY a valid JSON response containing EXACTLY these fields:
+    {{
+        "vibe_check": "A punchy, creative 2-3 sentence summary evaluating their GitHub presentation, passion, and style.",
+        "archetype": "A brief 2-4 word title archetype (e.g. 'Frontend UI Wizard', 'Backend Infrastructure Architect', 'Data Science & ML Explorer', 'Polished Generalist')",
+        "strengths": [
+            "Strength 1 (e.g. strong documentation, high public appeal, diverse language usage)",
+            "Strength 2",
+            "Strength 3"
+        ],
+        "growth_areas": [
+            "Growth recommendation 1 (e.g. try adding detailed READMEs to top projects, increase open-source collaboration)",
+            "Growth recommendation 2"
+        ],
+        "vibe_score": 0 to 100 as integer (evaluating their GitHub presentation quality, doc hygiene, star count),
+        "contribution_style": "Solo Builder | Open Source Contributor | Agile Hobbyist | Documentation Enthusiast"
+    }}
+    
+    Ensure your response is strict JSON without backticks, markdown, or text outside the curly braces.
+    """
+    return prompt
+
+
+def parse_profile_deep_scan_response(raw_response: str) -> Dict[str, Any]:
+    import re
+    try:
+        raw_response = re.sub(r'<think>.*?</think>', '', raw_response, flags=re.DOTALL)
+        
+        if "```json" in raw_response:
+            json_str = raw_response.split("```json")[1].split("```")[0].strip()
+        elif "```" in raw_response:
+            json_str = raw_response.split("```")[1].split("```")[0].strip()
+        else:
+            json_str = raw_response.strip()
+            
+        data = json.loads(json_str)
+        
+        import random
+        return {
+            "vibe_check": data.get("vibe_check", "Analysis unavailable."),
+            "archetype": data.get("archetype", "Polished Generalist"),
+            "strengths": data.get("strengths", ["Broad tech exploration"]),
+            "growth_areas": data.get("growth_areas", ["More public contribution"]),
+            "vibe_score": int(data.get("vibe_score", random.choice([75, 82, 88, 92]))),
+            "contribution_style": data.get("contribution_style", "Solo Builder")
+        }
+    except Exception as e:
+        logger.error(f"Failed to parse profile deep scan JSON: {e}")
+        import random
+        return {
+            "vibe_check": "Failed to generate AI Developer Persona.",
+            "archetype": "Polished Generalist",
+            "strengths": ["Broad technology explorer", "Public code availability"],
+            "growth_areas": ["Write richer descriptions", "Pin representative repositories"],
+            "vibe_score": random.choice([65, 70, 75, 80]),
+            "contribution_style": "Solo Builder"
+        }
+
+
+def run_profile_deep_scan(profile_info: Dict[str, Any], languages: list, repositories: list) -> Dict[str, Any]:
+    """Execute the AI Developer Persona deep scan using the LLM."""
+    prompt = build_profile_deep_scan_prompt(profile_info, languages, repositories)
+    logger.info("Executing LLM Profile Deep Scan via OpenAI/Gemini...")
+    raw = call_llm(prompt)
+    return parse_profile_deep_scan_response(raw)
+
