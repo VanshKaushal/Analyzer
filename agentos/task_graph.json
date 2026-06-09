@@ -1,11 +1,13 @@
 {
   "pending": [
-    "add folder",
     "hi",
     "hey",
     "Create docs folder with README",
-    "Add setup instructions to README"
+    "Add setup instructions to README",
+    "Create docs folder with README"
   ],
   "in_progress": [],
-  "completed": []
+  "completed": [
+    "add folder"
+  ]
 }

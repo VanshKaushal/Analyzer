@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-06-09T13:57:30.833Z",
+  "state": {
+    "active_agent": "opencode",
+    "session_start": "2026-06-09T13:54:46.728Z",
+    "objective": "Not set — run: agentos objective \"your goal\"",
+    "pending_tasks": [],
+    "drift_score": 0,
+    "fingerprint": "d08c997584ba",
+    "version": "0.1.0"
+  },
+  "decisions": {
+    "decisions": []
+  },
+  "task_graph": {
+    "pending": [
+      "hi",
+      "hey",
+      "Create docs folder with README",
+      "Add setup instructions to README"
+    ],
+    "in_progress": [],
+    "completed": [
+      "add folder"
+    ]
+  },
+  "arch_map": {},
+  "log_tail": [
+    {
+      "timestamp": "2026-06-09T13:56:09.814Z",
+      "agent": "opencode",
+      "files_changed": [
+        "agentos/snapshots/2026-06-10T03-03-43-965Z.json",
+        "agentos/state.json",
+        "agentos/task_graph.json",
+        "docs/test.md"
+      ],
+      "summary": "4 file(s) changed: agentos/snapshots/2026-06-10T03-03-43-965Z.json, agentos/state.json, agentos/task_graph.json...",
+      "accepted": true,
+      "session_id": "3850a707-ccee-47cb-bdbc-f1d12d5a294d"
+    }
+  ],
+  "fingerprint": "d08c997584ba"
+}
