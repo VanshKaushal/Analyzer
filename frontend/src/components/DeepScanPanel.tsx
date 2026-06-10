@@ -120,10 +120,18 @@ export function DeepScanPanel({ repo }: DeepScanPanelProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {/* Trust Calibration */}
-                <div className="glass rounded-xl p-4 border border-border/50 flex flex-col items-center justify-center text-center">
+                <div className="relative group glass rounded-xl p-4 border border-border/50 flex flex-col items-center justify-center text-center">
                     <Fingerprint className={cn("w-6 h-6 mb-2", trustColor)} />
                     <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Trust Calibration</span>
                     <span className={cn("text-2xl font-black", trustColor)}>{data.trust_score}<span className="text-sm opacity-60">/100</span></span>
+
+                    {/* Tooltip Dialog Box */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 z-50 bg-slate-800 text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none">
+                        Trust Calibration measures the reliability and authenticity of the codebase based on historical patterns and security markers.
+
+                        {/* Downward pointing arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                    </div>
                 </div>
 
                 {/* Tech Debt */}
