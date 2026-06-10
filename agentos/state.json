@@ -1,9 +1,9 @@
 {
-  "active_agent": "none",
-  "session_start": "2026-06-10T02:50:04.864Z",
+  "active_agent": "opencode",
+  "session_start": "2026-06-10T03:02:50.593Z",
   "objective": "Not set — run: agentos objective \"your goal\"",
   "pending_tasks": [],
   "drift_score": 0,
-  "fingerprint": "",
+  "fingerprint": "d08c997584ba",
   "version": "0.1.0"
 }
