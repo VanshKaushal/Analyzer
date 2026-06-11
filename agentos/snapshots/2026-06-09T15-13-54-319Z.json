@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-06-09T15:13:54.316Z",
+  "state": {
+    "active_agent": "antigravity",
+    "session_start": "2026-06-09T15:12:40.979Z",
+    "objective": "test project",
+    "pending_tasks": [],
+    "drift_score": 0,
+    "fingerprint": "d2c52ac772e8",
+    "version": "0.1.0"
+  },
+  "decisions": {
+    "decisions": []
+  },
+  "task_graph": {
+    "pending": [],
+    "in_progress": [],
+    "completed": [
+      "add folder",
+      "hi",
+      "build login page"
+    ]
+  },
+  "arch_map": {},
+  "log_tail": [
+    {
+      "timestamp": "2026-06-09T13:56:09.814Z",
+      "agent": "opencode",
+      "files_changed": [
+        "agentos/snapshots/2026-06-10T03-03-43-965Z.json",
+        "agentos/state.json",
+        "agentos/task_graph.json",
+        "docs/test.md"
+      ],
+      "summary": "4 file(s) changed: agentos/snapshots/2026-06-10T03-03-43-965Z.json, agentos/state.json, agentos/task_graph.json...",
+      "accepted": true,
+      "session_id": "3850a707-ccee-47cb-bdbc-f1d12d5a294d"
+    },
+    {
+      "timestamp": "2026-06-09T14:04:02.261Z",
+      "agent": "claude",
+      "files_changed": [
+        "agentos/execution_log.jsonl",
+        "agentos/snapshots/2026-06-09T13-57-30-835Z.json",
+        "agentos/state.json",
+        "agentos/task_graph.json",
+        "docs/abc.java"
+      ],
+      "summary": "5 file(s) changed: agentos/execution_log.jsonl, agentos/snapshots/2026-06-09T13-57-30-835Z.json, agentos/state.json...",
+      "accepted": true,
+      "session_id": "c8dc4213-62aa-46fa-b444-e430ab15eab9"
+    }
+  ],
+  "fingerprint": "d2c52ac772e8"
+}

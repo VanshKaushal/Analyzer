@@ -1,9 +1,9 @@
 {
   "active_agent": "claude",
-  "session_start": "2026-06-09T14:01:38.107Z",
-  "objective": "Not set — run: agentos objective \"your goal\"",
+  "session_start": "2026-06-11T11:21:15.169Z",
+  "objective": "test project",
   "pending_tasks": [],
   "drift_score": 0,
-  "fingerprint": "d08c997584ba",
+  "fingerprint": "d2c52ac772e8",
   "version": "0.1.0"
 }
