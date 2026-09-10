@@ -103,3 +103,76 @@ class DeepScanResponse(BaseModel):
     success: bool
     data: Optional[DeepScanData] = None
     error: Optional[str] = None
+
+
+# ──────────────────────────────────────────────
+# Profile Analysis Models
+# ──────────────────────────────────────────────
+
+class ProfileAnalyzeRequest(BaseModel):
+    """Validates the incoming profile analysis request."""
+    username: str
+
+    @field_validator("username")
+    @classmethod
+    def validate_username_format(cls, v: str) -> str:
+        v = v.strip()
+        if not re.match(r"^[a-zA-Z0-9-]{1,39}$", v):
+            raise ValueError("Invalid GitHub username format.")
+        return v
+
+
+class RepoPortfolioItem(BaseModel):
+    """Represents a repository in the user's portfolio."""
+    name: str
+    description: Optional[str] = None
+    stars: int
+    forks: int
+    language: Optional[str] = None
+    size: int
+    url: str
+    vibe_score: int  # custom AI / heuristic score
+
+
+class DeveloperPersona(BaseModel):
+    """AI-generated persona card for a developer."""
+    vibe_check: str
+    archetype: str
+    strengths: List[str]
+    growth_areas: List[str]
+    vibe_score: int
+    contribution_style: str
+
+
+class ProfileInfo(BaseModel):
+    """General GitHub user profile information."""
+    username: str
+    name: Optional[str] = None
+    avatar_url: str
+    bio: Optional[str] = None
+    company: Optional[str] = None
+    location: Optional[str] = None
+    followers: int
+    following: int
+    public_repos: int
+    total_stars: int
+    total_forks: int
+    html_url: str
+
+
+class ProfileAnalysisData(BaseModel):
+    """Complete analysis data payload for user profiles."""
+    profile: ProfileInfo
+    languages: List[LanguageInfo]
+    commits: List[CommitInfo]
+    repositories: List[RepoPortfolioItem]
+    persona: Optional[DeveloperPersona] = None
+
+
+class ProfileApiResponse(BaseModel):
+    """Standard profile API response envelope."""
+    success: bool
+    status: str  # "processing" | "complete" | "failed"
+    data: Optional[ProfileAnalysisData] = None
+    error: Optional[str] = None
+

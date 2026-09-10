@@ -14,11 +14,17 @@ from models import (
     ApiResponse,
     AnalysisData,
     ProjectInfo,
+    ProfileAnalyzeRequest,
+    ProfileApiResponse,
+    ProfileAnalysisData,
+    ProfileInfo,
+    RepoPortfolioItem,
 )
 from github_integration import github_service
 from analysis_engine import analysis_service
-from analysis_engine.deep_scanner import run_deep_scan
+from analysis_engine.deep_scanner import run_deep_scan, run_profile_deep_scan
 from utils import cache_service
+
 
 logger = logging.getLogger(__name__)
 
@@ -179,3 +185,120 @@ async def analyze_repo_deep(repo: str):
             "data": None,
             "error": f"Deep scan failed. Server Traceback:\n{tb_str}"
         }
+
+
+@router.post("/analyze/profile", response_model=ProfileApiResponse)
+async def analyze_profile(request: ProfileAnalyzeRequest):
+    """
+    Analyze a GitHub user profile and return structured aggregated data.
+    """
+    username = request.username.strip()
+    
+    # Check cache first
+    cached = cache_service.get_profile_analysis(username)
+    if cached:
+        return ProfileApiResponse(
+            success=True,
+            status="complete",
+            data=ProfileAnalysisData(**cached),
+            error=None
+        )
+        
+    try:
+        profile_info = github_service.fetch_user_profile(username)
+        stats = github_service.fetch_user_repos_and_stats(username)
+    except GithubException as e:
+        status_code = e.status if hasattr(e, "status") else 500
+        if status_code == 404:
+            return ProfileApiResponse(
+                success=False,
+                status="failed",
+                data=None,
+                error=f"User '{username}' not found on GitHub."
+            )
+        return ProfileApiResponse(
+            success=False,
+            status="failed",
+            data=None,
+            error=f"GitHub API error: {str(e)}"
+        )
+    except Exception as e:
+        logger.exception("Unexpected error during profile fetch")
+        return ProfileApiResponse(
+            success=False,
+            status="failed",
+            data=None,
+            error=f"An unexpected error occurred: {str(e)}"
+        )
+        
+    # Assemble analysis data
+    profile_data = ProfileAnalysisData(
+        profile=ProfileInfo(
+            username=profile_info["username"],
+            name=profile_info["name"],
+            avatar_url=profile_info["avatar_url"],
+            bio=profile_info["bio"],
+            company=profile_info["company"],
+            location=profile_info["location"],
+            followers=profile_info["followers"],
+            following=profile_info["following"],
+            public_repos=profile_info["public_repos"],
+            total_stars=stats["total_stars"],
+            total_forks=stats["total_forks"],
+            html_url=profile_info["html_url"]
+        ),
+        languages=stats["languages"],
+        commits=stats["commits"],
+        repositories=[
+            RepoPortfolioItem(**r) for r in stats["repositories"]
+        ],
+        persona=None # Filled on deep scan demand
+    )
+    
+    # Cache result
+    cache_service.set_profile_analysis(username, profile_data.model_dump())
+    
+    return ProfileApiResponse(
+        success=True,
+        status="complete",
+        data=profile_data,
+        error=None
+    )
+
+
+@router.get("/analyze/profile/deep")
+async def analyze_profile_deep(username: str):
+    """
+    Perform a deep AI scan of the user profile to generate a Developer Persona.
+    """
+    try:
+        profile_info = github_service.fetch_user_profile(username)
+        stats = github_service.fetch_user_repos_and_stats(username)
+        
+        # Run profile deep scan
+        persona = run_profile_deep_scan(
+            {**profile_info, "total_stars": stats["total_stars"], "total_forks": stats["total_forks"]},
+            [l.name for l in stats["languages"]],
+            stats["repositories"]
+        )
+        
+        # We can also update the cached profile analysis data to include this persona!
+        cached = cache_service.get_profile_analysis(username)
+        if cached:
+            cached["persona"] = persona
+            cache_service.set_profile_analysis(username, cached)
+            
+        return {
+            "success": True,
+            "data": persona,
+            "error": None
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error during profile deep scan: {e}")
+        tb_str = traceback.format_exc()
+        return {
+            "success": False,
+            "data": None,
+            "error": f"Profile deep scan failed. Server Traceback:\n{tb_str}"
+        }
+
