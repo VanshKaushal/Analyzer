@@ -130,3 +130,45 @@ def get_cache_status() -> dict:
         }
     except Exception as e:
         return {"available": False, "message": str(e)}
+
+
+def get_profile_analysis(username: str) -> Optional[dict]:
+    """Retrieve a cached profile analysis result."""
+    client = get_redis_client()
+    if client is None:
+        return None
+
+    key = f"profile:{username.lower()}"
+
+    try:
+        raw = client.get(key)
+        if raw is not None:
+            logger.info(f"🟢 Profile Cache HIT  → {key}")
+            return json.loads(raw)
+        else:
+            logger.info(f"⚪ Profile Cache MISS → {key}")
+            return None
+
+    except Exception as e:
+        logger.warning(f"Cache read error for {key}: {e}")
+        return None
+
+
+def set_profile_analysis(username: str, data: dict) -> bool:
+    """Store a profile analysis result in Redis with a 1-hour TTL."""
+    client = get_redis_client()
+    if client is None:
+        return False
+
+    key = f"profile:{username.lower()}"
+
+    try:
+        serialized = json.dumps(data, default=str)
+        client.setex(key, CACHE_TTL, serialized)
+        logger.info(f"💾 Profile Cached     → {key}  (TTL={CACHE_TTL}s)")
+        return True
+
+    except Exception as e:
+        logger.warning(f"Cache write error for {key}: {e}")
+        return False
+
