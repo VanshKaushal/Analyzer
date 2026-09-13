@@ -1,21 +1,21 @@
-# SmartCode: GitHub Repo Analyzer & AI Reviewer 🚀
+# CodeIntel: GitHub Repo Analyzer & AI Reviewer
 
 > **An enterprise-grade, full-stack GitHub Repository Intelligence Platform and Automated AI Code Reviewer.**
-> SmartCode analyzes public GitHub repositories and developer profiles to generate deep-scan architectural insights, technical debt ratings, dynamic Mermaid charts, interactive file trees, smart previews, and automated AI pull request code reviews.
+> CodeIntel analyzes public GitHub repositories and developer profiles to generate deep-scan architectural insights, technical debt ratings, dynamic Mermaid charts, interactive file trees, smart previews, and automated AI pull request code reviews.
 
 ---
 
-### 🌟 Key Highlights
+### Key Highlights
 
-- 🧠 **AI Deep Scan & Architecture Intelligence** — LLM-powered deep scans evaluating technical debt, security risk, trust calibration score, vibe check, key strengths/weaknesses, and developer personas.
-- 👤 **Developer Footprint & Portfolio Profiling** — Comprehensive developer analysis featuring portfolio repository vibe scores, aggregated tech stack language breakdowns, activity commit charts, and AI-generated Developer Personas.
-- 🤖 **Automated AI Pull Request Reviewer** — Celery async worker & Redis webhook processor that fetches PR code diffs, evaluates quality & security alignment, and posts markdown review comments directly back to GitHub PRs.
-- ⚡ **Unified Full-Stack Architecture** — Single-command server deployment where FastAPI seamlessly serves both high-performance REST APIs and the built Vite + React 18 + TypeScript + Tailwind CSS production bundle.
-- 🛡️ **Resilient Multi-Tier Caching & Graceful Fallback** — Redis caching with 1-hour TTL. Operates smoothly even if Redis or external LLM API keys are unavailable using intelligent mock/heuristic fallbacks.
+- **AI Deep Scan & Architecture Intelligence** — LLM-powered deep scans evaluating technical debt, security risk, trust calibration score, vibe check, key strengths/weaknesses, and developer personas.
+- **Developer Footprint & Portfolio Profiling** — Comprehensive developer analysis featuring portfolio repository vibe scores, aggregated tech stack language breakdowns, activity commit charts, and AI-generated Developer Personas.
+- **Automated AI Pull Request Reviewer** — Celery async worker & Redis webhook processor that fetches PR code diffs, evaluates quality & security alignment, and posts markdown review comments directly back to GitHub PRs.
+- **Unified Full-Stack Architecture** — Single-command server deployment where FastAPI seamlessly serves both high-performance REST APIs and the built Vite + React 18 + TypeScript + Tailwind CSS production bundle.
+- **Resilient Multi-Tier Caching & Graceful Fallback** — Redis caching with 1-hour TTL. Operates smoothly even if Redis or external LLM API keys are unavailable using intelligent mock/heuristic fallbacks.
 
 ---
 
-## 📐 Architecture & System Data Flow
+## Architecture & System Data Flow
 
 ```mermaid
 flowchart TD
@@ -56,9 +56,9 @@ flowchart TD
 
 ---
 
-## 🎨 Features in Detail
+## Features in Detail
 
-### 📊 1. Repository Scanner & Codebase Analytics
+### 1. Repository Scanner & Codebase Analytics
 - **Instant Metadata:** Real-time star counts, fork counts, watchers, primary topics, and descriptions.
 - **Language Distribution:** Exact byte percentage breakdown visualized across primary languages.
 - **Monthly Commit Timeline:** 6-month historical commit activity chart powered by Recharts.
@@ -67,11 +67,11 @@ flowchart TD
 - **Complexity Score (1–10):** Calculated dynamically based on file volume and language diversity.
 - **Key Features Auto-Extraction:** Auto-identifies indicators such as Docker containerization, CI/CD pipelines, documentation directories, automated test suites, build scripts, and env templates.
 
-### 🖼️ 2. Smart Repository Preview System
+### 2. Smart Repository Preview System
 - **Live Deployment Detection:** Inspects repository metadata for homepage/live URLs (e.g. GitHub Pages or custom domain) and provides a one-click launcher.
 - **Markdown README Rendering:** If no live URL is configured, automatically fetches and renders the repository's `README.md` directly inside the dashboard preview panel.
 
-### 🧠 3. AI Deep Scan (Architecture & Quality Inspection)
+### 3. AI Deep Scan (Architecture & Quality Inspection)
 - **Technical Debt Rating:** Categorized as `Low`, `Medium`, or `High` based on project complexity, documentation presence, and file hierarchy.
 - **Architecture Risk & Security Severity:** Evaluates structural risks and potential architectural anti-patterns.
 - **Trust Calibration Score (0–100):** A metric reflecting documentation completeness, standard project layout, and repository hygiene.
@@ -79,7 +79,7 @@ flowchart TD
 - **Core Strengths & Weaknesses:** Explicitly highlights what the project handles exceptionally well and identifies the top architectural flaw or missing component.
 - **DeepSeek R1 / Reasoning Model Support:** Built-in regex sanitizers automatically strip `<think>...</think>` tags and handle backtick-wrapped JSON output from modern reasoning models.
 
-### 👤 4. Developer Footprint & Portfolio Profiler
+### 4. Developer Footprint & Portfolio Profiler
 - **Global Profile Metrics:** Evaluates followers, following, public repository count, location, company, and total accumulated stars & forks across all projects.
 - **Portfolio Vibe Scoring:** Analyzes top public projects and assigns a 0-100 "Vibe Score" based on star ratio, fork engagement, documentation presence, and repository flags.
 - **Aggregated Language Distribution:** Calculates global language byte totals across all developer repositories.
@@ -89,7 +89,7 @@ flowchart TD
   - **Key Strengths & Growth Areas:** Tailored recommendations for career & repository growth.
   - **Contribution Style:** *Solo Builder*, *Open Source Contributor*, *Agile Hobbyist*, etc.
 
-### 🤖 5. Automated AI Pull Request Reviewer
+### 5. Automated AI Pull Request Reviewer
 - **Webhook Gateway:** Listens to incoming GitHub Webhooks on `/api/v1/webhook`.
 - **HMAC SHA256 Verification:** Verifies payload signatures using `GITHUB_WEBHOOK_SECRET` to ensure authenticity.
 - **Asynchronous Processing:** Offloads heavy diff extraction and LLM calls to a background Celery worker queue powered by Redis.
@@ -100,7 +100,7 @@ flowchart TD
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology / Library | Purpose |
 | :--- | :--- | :--- |
@@ -119,7 +119,7 @@ flowchart TD
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 analyzer/
@@ -165,9 +165,9 @@ analyzer/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📋 Prerequisites
+### Prerequisites
 
 Ensure you have the following installed on your machine:
 1. **Python 3.9 or higher** (`python --version`)
@@ -176,7 +176,7 @@ Ensure you have the following installed on your machine:
 
 ---
 
-### ⚙️ 1. Environment Configuration
+### 1. Environment Configuration
 
 Create a `.env` file in the root directory of the project:
 
@@ -195,11 +195,11 @@ LLM_BASE_URL=https://api.openai.com/v1
 LLM_MODEL=gpt-4o
 ```
 
-> 💡 **Note:** If `GITHUB_TOKEN` is omitted, the app will make unauthenticated requests to GitHub (subject to lower rate limits: 60 req/hr vs 5,000 req/hr). If `LLM_API_KEY` is omitted, the app automatically falls back to heuristic & safe mock responses without crashing.
+> **Note:** If `GITHUB_TOKEN` is omitted, the app will make unauthenticated requests to GitHub (subject to lower rate limits: 60 req/hr vs 5,000 req/hr). If `LLM_API_KEY` is omitted, the app automatically falls back to heuristic & safe mock responses without crashing.
 
 ---
 
-### 🐳 2. Start Redis Service (Optional - Recommended)
+### 2. Start Redis Service (Optional - Recommended)
 
 Start the Redis Docker container for caching and Celery task execution:
 
@@ -209,7 +209,7 @@ docker-compose up -d
 
 ---
 
-### 🏃 3. Run the Unified Application Server
+### 3. Run the Unified Application Server
 
 #### Option A: One-Click Startup Script (Windows)
 
@@ -240,14 +240,14 @@ run.bat
    ```
 
 Once started, access the web application at:
-👉 **`http://127.0.0.1:8000`**
+- **`http://127.0.0.1:8000`**
 
 Interactive Swagger API Documentation:
-👉 **`http://127.0.0.1:8000/docs`**
+- **`http://127.0.0.1:8000/docs`**
 
 ---
 
-### 🤖 4. Start the AI Celery Worker (Optional - For Automated PR Reviews)
+### 4. Start the AI Celery Worker (Optional - For Automated PR Reviews)
 
 To process GitHub Pull Request webhooks asynchronously and post automated AI code reviews, start the Celery worker in a separate terminal:
 
@@ -255,11 +255,11 @@ To process GitHub Pull Request webhooks asynchronously and post automated AI cod
 celery -A worker.celery_app worker --loglevel=info -P solo
 ```
 
-> ⚠️ **Windows Note:** The `-P solo` execution pool flag is required on Windows operating systems for Celery task processing.
+> **Windows Note:** The `-P solo` execution pool flag is required on Windows operating systems for Celery task processing.
 
 ---
 
-## 🔌 REST API Documentation
+## REST API Documentation
 
 ### 1. Repository Analysis
 
@@ -355,7 +355,7 @@ Health check endpoint reporting server operational status and Redis cache memory
 
 ---
 
-## 🔗 GitHub Webhook Integration Guide
+## GitHub Webhook Integration Guide
 
 To connect a GitHub Repository for automated AI PR reviews:
 
@@ -365,20 +365,20 @@ To connect a GitHub Repository for automated AI PR reviews:
 4. **Secret:** Set to the value defined in your `GITHUB_WEBHOOK_SECRET` environment variable.
 5. **Which events would you like to trigger this webhook?** Select **Let me select individual events** and check **Pull requests**.
 6. Ensure your Celery worker is running (`celery -A worker.celery_app worker --loglevel=info -P solo`).
-7. Open a new PR in your repository—SmartCode will analyze the diff and automatically post a code review comment!
+7. Open a new PR in your repository—CodeIntel will analyze the diff and automatically post a code review comment!
 
 ---
 
-## 💡 Robustness & Fallback Mechanisms
+## Robustness & Fallback Mechanisms
 
-SmartCode is engineered to be zero-downtime resilient:
+CodeIntel is engineered to be zero-downtime resilient:
 - **Redis Down?** Automatically bypasses caching and fetches fresh data directly from GitHub without throwing exceptions.
 - **No LLM API Key?** Automatically uses heuristic rule engines to provide clean, structured data payloads for deep scans and PR reviews.
 - **GitHub Rate Limited?** Returns clear, human-friendly error envelopes while gracefully preserving previously cached results in Redis.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Feel free to submit an issue or open a pull request.
 
@@ -390,10 +390,11 @@ Contributions are welcome! Feel free to submit an issue or open a pull request.
 
 ---
 
-## 📄 License
+## License
 
 This project is open source and available under the **MIT License**.
 
 ---
-*Created with ❤️ for college project & AI developer intelligence.*
+*Created for college project & AI developer intelligence.*
+
 
